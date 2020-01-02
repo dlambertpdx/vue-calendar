@@ -197,13 +197,22 @@
       },
       async updateEvent(event) {
         await db
-        .collection('calEvent')
-        .doc(this.currentlyEditing)
-        .update({
-          details: event.details
-        });
+          .collection('calEvent')
+          .doc(this.currentlyEditing)
+          .update({
+            details: event.details
+          });
         this.selectedOpen = false;
         this.currentlyEditing = null;
+      },
+      async deleteEvent(event) {
+        await db
+          .collection('calEvent')
+          .doc(event)
+          .delete()
+
+        this.selectedOpen = false;
+        this.getEvents();
       },
       viewDay ({ date }) {
         this.focus = date
