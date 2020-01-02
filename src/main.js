@@ -7,7 +7,18 @@ import 'firebase/firestore';
 
 Vue.use(VueTextareaAutosize);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+
+const ignoreWarnMessage = 'The .native modifier for v-on is only valid on components but it was used on <div>.';
+// eslint-disable-next-line no-unused-vars
+Vue.config.warnHandler = function (msg, vm, trace) {
+  // `trace` is the component hierarchy trace
+  if (msg === ignoreWarnMessage) {
+    msg = null;
+    vm = null;
+    trace = null;
+  }
+}
 
 firebase.initializeApp({
   apiKey: "AIzaSyBzd6vaGC65nBmhMawiRzM4h8jcb6k0mic",
