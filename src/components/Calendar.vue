@@ -3,6 +3,9 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
+          <v-btn color="primary" dark class="mr-4" @click="dialog = true">
+            New Event
+          </v-btn>
           <v-btn outlined class="mr-4" @click="setToday">
             Today
           </v-btn>
@@ -41,6 +44,29 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
+
+      <!-- Add Event Dialog -->
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-container>
+            <v-form @submit.prevent="addEvent">
+              <v-text-field v-model="name" type="text" label="event name (required)"></v-text-field>
+              <v-text-field v-model="details" type="text" label="details"></v-text-field>
+              <v-text-field v-model="start" type="date" label="start (required)"></v-text-field>
+              <v-text-field v-model="end" type="date" label="end (required)"></v-text-field>
+              <v-text-field v-model="color" type="color" label="color (click to select color)"></v-text-field>
+              <v-btn 
+                type="submit" 
+                color="primary" 
+                class="mr-4" 
+                @click.stop="dialog = false"
+                >Create Event
+              </v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
       <v-sheet height="600">
         <v-calendar
           ref="calendar"
@@ -204,6 +230,27 @@
           });
         this.selectedOpen = false;
         this.currentlyEditing = null;
+      },
+      async addEvent() {
+        if(this.name && this.start && this.end ) {
+          await db
+            .collection('calEvent')
+            .add({
+              name: this.name, 
+              details: this.details,
+              start: this.start,
+              end: this.end,
+              color: this.color
+              });
+              this.getEvents();
+              this.name = ""
+              this.details = ""
+              this.start = ""
+              this.end = ""
+              this.color = "#1976D2"
+        } else {
+          alert('Name, Start Date, and End Date are required')
+        }
       },
       async deleteEvent(event) {
         await db
